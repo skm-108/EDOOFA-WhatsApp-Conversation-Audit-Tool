@@ -254,13 +254,15 @@ You must output a JSON object matching this schema exactly:
 Only return the JSON structure. Do not wrap it in markdown code blocks like ```json ... ```. Do not add any text before or after the JSON. Verify that your JSON is syntactically valid.
 """
 
-        model = genai.GenerativeModel("gemini-1.5-pro")
+        model = genai.GenerativeModel(
+            model_name="gemini-1.5-pro",
+            system_instruction=system_prompt
+        )
         response = model.generate_content(
             contents=[
                 {"role": "user", "parts": [f"Chat Transcript from file: {filename}\n\n{chat_transcript}"]},
             ],
-            generation_config={"response_mime_type": "application/json"},
-            system_instruction=system_prompt
+            generation_config={"response_mime_type": "application/json"}
         )
         
         result_text = response.text.strip()
