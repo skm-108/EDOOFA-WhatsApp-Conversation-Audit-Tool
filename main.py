@@ -243,12 +243,20 @@ Only return the JSON structure. Do not wrap it in markdown code blocks like ```j
 async def sync_sheet(payload: SyncRequest):
     # Syncs findings to Google Sheets
     if payload.appsScriptUrl:
+        url = payload.appsScriptUrl.strip()
+        # Verify it is a valid deployed Web App URL
+        if "/macros/s/" not in url or "/exec" not in url:
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid Google Apps Script URL. You pasted the Script Editor URL. Please click 'Deploy' -> 'New Deployment' -> choose 'Web App' -> set access to 'Anyone', then copy the deployment URL containing '/macros/s/.../exec'."
+            )
+        
         # Use Google Apps Script (Webhook)
         try:
             # Transform pydantic rows to serializable dicts
             rows_data = [row.model_dump() for row in payload.rows]
             resp = requests.post(
-                payload.appsScriptUrl,
+                url,
                 json={
                     "sheetId": payload.sheetId,
                     "rows": rows_data
@@ -259,6 +267,8 @@ async def sync_sheet(payload: SyncRequest):
                 return resp.json()
             else:
                 raise HTTPException(status_code=resp.status_code, detail=f"Apps Script error: {resp.text}")
+        except HTTPException:
+            raise
         except Exception as e:
             logger.error(f"Error calling Apps Script Webhook: {e}")
             raise HTTPException(status_code=500, detail=f"Webhook sync failed: {str(e)}")
