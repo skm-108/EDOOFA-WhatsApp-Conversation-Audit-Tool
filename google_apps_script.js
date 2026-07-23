@@ -19,11 +19,20 @@ function doPost(e) {
     var targetSheetId = payload.sheetId; // Optional: can target a specific sheet by ID
     var sheetName = "Audit Findings";
     
-    var ss;
-    if (targetSheetId) {
-      ss = SpreadsheetApp.openById(targetSheetId);
-    } else {
+    var ss = null;
+    try {
+      if (targetSheetId && targetSheetId.toString().trim() !== "") {
+        ss = SpreadsheetApp.openById(targetSheetId.toString().trim());
+      } else {
+        ss = SpreadsheetApp.getActiveSpreadsheet();
+      }
+    } catch (openErr) {
+      // Fallback to active spreadsheet if ID lookup fails
       ss = SpreadsheetApp.getActiveSpreadsheet();
+    }
+    
+    if (!ss) {
+      throw new Error("Could not access spreadsheet. If using a Standalone script, you must provide a valid Google Sheet ID. If using a Bound script, make sure it is attached to your Google Sheet.");
     }
     
     var sheet = ss.getSheetByName(sheetName);
