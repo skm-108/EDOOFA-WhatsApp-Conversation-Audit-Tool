@@ -2336,11 +2336,10 @@ We focus on guiding students properly, step by step. And honestly, we feel happy
             progressSubtextText.innerText = 'Fetching Chat 1 and Chat 2 transcripts.';
 
             try {
-                // Mock files for upload items
-                uploadedFiles = [
-                    { name: 'Chat 1.txt', size: 15783 },
-                    { name: 'Chat 2.txt', size: 20090 }
-                ];
+                // Create real File objects from embedded texts so they can be re-audited
+                const file1 = new File([DEMO_CHAT_1_TEXT], 'Chat 1.txt', { type: 'text/plain' });
+                const file2 = new File([DEMO_CHAT_2_TEXT], 'Chat 2.txt', { type: 'text/plain' });
+                uploadedFiles = [file1, file2];
                 updateFileList();
 
                 // Parse embedded chat logs locally
