@@ -1,0 +1,19 @@
+# Python virtual environment
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local environment files
+.env
+.env.local
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# App-specific temporary files
+Crashes/
+.gemini/

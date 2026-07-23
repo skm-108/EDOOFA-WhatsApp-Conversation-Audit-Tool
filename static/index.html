@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edoofa WhatsApp Conversation Audit Tool</title>
+    <!-- Google Fonts: Outfit and Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #080c14;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --font-outfit: 'Outfit', sans-serif;
+            --font-inter: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-inter);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        header {
+            background: rgba(13, 18, 30, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+
+        .logo-text h1 {
+            font-family: var(--font-outfit);
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            background: linear-gradient(to right, #ffffff, #c7d2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-family: var(--font-outfit);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .upload-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .upload-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .dropzone {
+            border: 2px dashed rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(99, 102, 241, 0.02);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .dropzone:hover, .dropzone.dragover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
+        }
+
+        .dropzone i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .dropzone h3 {
+            font-family: var(--font-outfit);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .dropzone p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .file-list-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .file-list {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-item-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .file-item-info i {
+            color: var(--primary);
+        }
+
+        .file-item-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .file-item-size {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .btn-remove-file {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .btn-remove-file:hover {
+            color: var(--danger);
+        }
+
+        /* Config Panel */
+        .config-card {
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            font-family: var(--font-outfit);
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            font-family: var(--font-inter);
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Progress Modal */
+        .progress-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-container {
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            padding: 2.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(99, 102, 241, 0.1);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border-left-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-status {
+            font-family: var(--font-outfit);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .progress-subtext {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Dashboard Results */
+        .dashboard-container {
+            display: none;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: var(--font-outfit);
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Tabs */
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-muted);
+            padding: 0.75rem 1rem;
+            font-family: var(--font-outfit);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Macro Patterns View */
+        .patterns-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .pattern-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .pattern-card:hover {
+            transform: translateX(4px);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .pattern-title {
+            font-family: var(--font-outfit);
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #c7d2fe;
+        }
+
+        .pattern-description {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Findings List View */
+        .findings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .finding-row {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.01);
+            transition: border-color 0.2s;
+        }
+
+        .finding-row:hover {
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        .finding-summary {
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .finding-title-block {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .severity-badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .severity-critical {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .severity-major {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fde047;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .severity-minor {
+            background: rgba(59, 130, 246, 0.15);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .category-badge {
+            background: rgba(255, 255, 255, 0.06);
+            color: #e5e7eb;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .finding-title {
+            font-family: var(--font-outfit);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .finding-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .finding-details {
+            display: none;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--border-color);
+            animation: slideDown 0.2s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .details-section h4 {
+            font-family: var(--font-outfit);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .details-section p {
+            font-size: 0.9rem;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+
+        .evidence-section {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 768px) {
+            .evidence-section {
+                grid-column: span 1;
+            }
+        }
+
+        .evidence-quote {
+            background: rgba(15, 23, 42, 0.4);
+            border-left: 3px solid #8b5cf6;
+            padding: 0.75rem 1rem;
+            border-radius: 0 6px 6px 0;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .evidence-text {
+            font-style: italic;
+            color: #d1d5db;
+        }
+
+        .evidence-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            margin-left: 1rem;
+        }
+
+        .btn-go-to-line {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem;
+        }
+
+        .btn-go-to-line:hover {
+            color: var(--text-main);
+            text-decoration: underline;
+        }
+
+        /* Transcript Tab Styling */
+        .transcript-layout {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 1.5rem;
+            height: 600px;
+        }
+
+        @media (max-width: 900px) {
+            .transcript-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .transcript-sidebar {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+        }
+
+        .chat-selector-item {
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .chat-selector-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .chat-selector-item.active {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+            color: var(--text-main);
+        }
+
+        .chat-selector-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            font-family: var(--font-outfit);
+        }
+
+        .chat-selector-info {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .transcript-viewer-container {
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .transcript-search {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .transcript-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .msg-bubble {
+            max-width: 75%;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            line-height: 1.5;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        /* Message highlights */
+        .msg-highlight {
+            animation: flashHighlight 2s ease-in-out 3;
+            outline: 2px solid var(--primary);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        }
+
+        @keyframes flashHighlight {
+            0%, 100% { background-color: inherit; }
+            50% { background-color: rgba(99, 102, 241, 0.3); }
+        }
+
+        .msg-counselor {
+            align-self: flex-start;
+            background: rgba(30, 41, 59, 0.8);
+            border-left: 3px solid var(--primary);
+            border-top-left-radius: 2px;
+        }
+
+        .msg-family {
+            align-self: flex-end;
+            background: rgba(16, 185, 129, 0.08);
+            border-right: 3px solid var(--success);
+            border-top-right-radius: 2px;
+        }
+
+        .msg-system {
+            align-self: center;
+            background: rgba(255, 255, 255, 0.05);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .msg-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+            gap: 1rem;
+        }
+
+        .msg-sender {
+            font-weight: 600;
+        }
+
+        .msg-body {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .msg-line-tag {
+            font-size: 0.7rem;
+            background: rgba(255,255,255,0.06);
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        /* Google Sheet Sync card */
+        .sync-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(99, 102, 241, 0.05));
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .sync-card {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        .sync-text h3 {
+            font-family: var(--font-outfit);
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 0.25rem;
+        }
+
+        .sync-text p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .sync-inputs {
+            display: flex;
+            gap: 1rem;
+            flex-grow: 1;
+            max-width: 600px;
+        }
+
+        @media (max-width: 900px) {
+            .sync-inputs {
+                flex-direction: column;
+            }
+        }
+
+        /* Settings Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--text-main);
+        }
+
+        .modal-title {
+            font-family: var(--font-outfit);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--card-bg);
+            border-left: 4px solid var(--success);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateY(150%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .toast-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.1rem;
+        }
+
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <div class="logo-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+            <div class="logo-text">
+                <h1>EDOOFA Chat Auditor</h1>
+                <span>Quality & Compliance Analysis</span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-outline" id="btn-open-settings">
+                <i class="fa-solid fa-cog"></i> Settings
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- File upload and Settings input -->
+        <div class="upload-section">
+            <div class="card file-list-container">
+                <div class="dropzone" id="chat-dropzone">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <h3>Drag & Drop Chat Logs</h3>
+                    <p>Or click to browse files (WhatsApp .txt exports)</p>
+                    <input type="file" id="file-input" multiple style="display:none;" accept=".txt">
+                </div>
+                
+                <div>
+                    <h4 style="margin-top:1.5rem; font-family:var(--font-outfit);">Uploaded Files</h4>
+                    <div class="file-list" id="file-list-items">
+                        <div class="file-item-empty" style="color:var(--text-muted); font-size:0.9rem; padding:1rem; text-align:center;">
+                            No files uploaded yet. Add Chat 1 & Chat 2 to begin.
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+                    <button class="btn btn-outline" id="btn-load-demo" style="border-color:#10b981; color:#10b981;">
+                        <i class="fa-solid fa-play"></i> Load Demo Findings
+                    </button>
+                    <button class="btn" id="btn-run-audit" disabled>
+                        <i class="fa-solid fa-magnifying-glass-chart"></i> Run Audit Analysis
+                    </button>
+                </div>
+            </div>
+
+            <div class="card config-card">
+                <h3 style="font-family:var(--font-outfit); margin-bottom:1.25rem;">Audit Settings</h3>
+                
+                <div class="form-group">
+                    <label for="gemini-key-input">Gemini API Key</label>
+                    <input type="password" class="form-control" id="gemini-key-input" placeholder="AIZA... (stored locally)">
+                    <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">
+                        Required to run analysis. Your key is not saved to our servers.
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label for="google-sheet-id">Google Sheet ID</label>
+                    <input type="text" class="form-control" id="google-sheet-id" placeholder="Spreadsheet ID key">
+                </div>
+
+                <div class="form-group">
+                    <label for="apps-script-url">Google Apps Script Web App URL</label>
+                    <input type="text" class="form-control" id="apps-script-url" placeholder="https://script.google.com/macros/s/.../exec">
+                    <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">
+                        Allows zero-auth syncing directly to your Google Sheet rows.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Analysis Results (Hidden by default) -->
+        <div class="dashboard-container" id="dashboard-results">
+            <!-- Metrics Summary Cards -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:rgba(99, 102, 241, 0.1); color:var(--primary);">
+                        <i class="fa-solid fa-file-invoice"></i>
+                    </div>
+                    <div>
+                        <div class="metric-value" id="val-audited-chats">0</div>
+                        <div class="metric-label">Audited Chats</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:rgba(239, 68, 68, 0.1); color:var(--danger);">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div>
+                        <div class="metric-value" id="val-critical-findings">0</div>
+                        <div class="metric-label">Critical Findings</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:rgba(245, 158, 11, 0.1); color:var(--warning);">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    </div>
+                    <div>
+                        <div class="metric-value" id="val-major-findings">0</div>
+                        <div class="metric-label">Major Findings</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:rgba(16, 185, 129, 0.1); color:var(--success);">
+                        <i class="fa-solid fa-square-check"></i>
+                    </div>
+                    <div>
+                        <div class="metric-value" id="val-total-findings">0</div>
+                        <div class="metric-label">Total Findings</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Headers -->
+            <div class="card" style="padding: 1.5rem 2rem;">
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="tab-findings">Specific Audit Findings</button>
+                    <button class="tab-btn" data-tab="tab-patterns">Macro Behavioral Patterns</button>
+                    <button class="tab-btn" data-tab="tab-transcripts">Interactive Chat Transcripts</button>
+                </div>
+
+                <!-- TAB: Findings -->
+                <div class="tab-content active" id="tab-findings">
+                    <div class="findings-list" id="findings-container">
+                        <!-- Dynamic findings generated here -->
+                    </div>
+                </div>
+
+                <!-- TAB: Patterns -->
+                <div class="tab-content" id="tab-patterns">
+                    <div class="patterns-grid" id="patterns-container">
+                        <!-- Dynamic patterns generated here -->
+                    </div>
+                </div>
+
+                <!-- TAB: Transcripts -->
+                <div class="tab-content" id="tab-transcripts">
+                    <div class="transcript-layout">
+                        <div class="transcript-sidebar" id="transcript-chat-list">
+                            <!-- List of chats loaded -->
+                        </div>
+                        <div class="transcript-viewer-container">
+                            <div class="transcript-search">
+                                <input type="text" class="form-control" id="search-msg-input" placeholder="Search transcript messages...">
+                            </div>
+                            <div class="transcript-messages" id="transcript-messages-container">
+                                <div style="color:var(--text-muted); text-align:center; margin:auto;">Select a conversation to view transcript.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Google Sheet Sync Trigger Card -->
+            <div class="sync-card">
+                <div class="sync-text">
+                    <h3>Synchronize Report to Google Sheets</h3>
+                    <p>Appends all identified compliance findings into your configured audit tracking spreadsheet.</p>
+                </div>
+                <div class="sync-inputs">
+                    <button class="btn btn-success" id="btn-sync-now">
+                        <i class="fa-solid fa-rotate"></i> Sync Findings to Sheets
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="btn-close-settings">&times;</button>
+            <h3 class="modal-title">System Settings</h3>
+            
+            <div class="form-group">
+                <label for="modal-gemini-key">Gemini API Key</label>
+                <input type="password" class="form-control" id="modal-gemini-key">
+            </div>
+
+            <div class="form-group">
+                <label for="modal-sheet-id">Google Sheet ID</label>
+                <input type="text" class="form-control" id="modal-sheet-id">
+            </div>
+
+            <div class="form-group">
+                <label for="modal-apps-script">Apps Script URL</label>
+                <input type="text" class="form-control" id="modal-apps-script">
+            </div>
+
+            <button class="btn" style="width:100%; margin-top:1rem;" id="btn-save-settings">Save Configurations</button>
+        </div>
+    </div>
+
+    <!-- Progress Modal -->
+    <div class="progress-overlay" id="progress-modal">
+        <div class="progress-container">
+            <div class="spinner"></div>
+            <div class="progress-status" id="progress-status-text">Uploading Files...</div>
+            <div class="progress-subtext" id="progress-subtext-text">Parsing logs and extracting transcripts.</div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="system-toast">
+        <div id="toast-icon-block" style="font-size:1.25rem;"><i class="fa-solid fa-circle-check"></i></div>
+        <div>
+            <div class="toast-title" id="toast-title-text">Sync Successful</div>
+            <div class="toast-desc" id="toast-desc-text">Findings appended to Google Sheet.</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Edoofa Audit Round prototype. Built with FastAPI and Gemini.</p>
+    </footer>
+
+    <script>
+        // State variables
+        let uploadedFiles = [];
+        let parsedChats = {}; // filename -> parsed messages structure
+        let auditReports = {}; // filename -> generated report object
+        let currentActiveChat = null;
+
+        // Dom elements
+        const dropzone = document.getElementById('chat-dropzone');
+        const fileInput = document.getElementById('file-input');
+        const fileListItems = document.getElementById('file-list-items');
+        const btnRunAudit = document.getElementById('btn-run-audit');
+        const btnLoadDemo = document.getElementById('btn-load-demo');
+        const progressModal = document.getElementById('progress-modal');
+        const progressStatusText = document.getElementById('progress-status-text');
+        const progressSubtextText = document.getElementById('progress-subtext-text');
+        const dashboardResults = document.getElementById('dashboard-results');
+        const findingsContainer = document.getElementById('findings-container');
+        const patternsContainer = document.getElementById('patterns-container');
+        const transcriptChatList = document.getElementById('transcript-chat-list');
+        const transcriptMessagesContainer = document.getElementById('transcript-messages-container');
+        const searchMsgInput = document.getElementById('search-msg-input');
+        const btnSyncNow = document.getElementById('btn-sync-now');
+
+        // Settings Elements
+        const btnOpenSettings = document.getElementById('btn-open-settings');
+        const btnCloseSettings = document.getElementById('btn-close-settings');
+        const btnSaveSettings = document.getElementById('btn-save-settings');
+        const settingsModal = document.getElementById('settings-modal');
+        
+        // Input fields (Direct & Modal)
+        const geminiKeyInput = document.getElementById('gemini-key-input');
+        const googleSheetId = document.getElementById('google-sheet-id');
+        const appsScriptUrl = document.getElementById('apps-script-url');
+        const modalGeminiKey = document.getElementById('modal-gemini-key');
+        const modalSheetId = document.getElementById('modal-sheet-id');
+        const modalAppsScript = document.getElementById('modal-apps-script');
+
+        // Toast
+        const systemToast = document.getElementById('system-toast');
+        const toastTitleText = document.getElementById('toast-title-text');
+        const toastDescText = document.getElementById('toast-desc-text');
+        const toastIconBlock = document.getElementById('toast-icon-block');
+
+        // Initial setup
+        window.addEventListener('DOMContentLoaded', () => {
+            // Load credentials from localStorage
+            const key = localStorage.getItem('gemini_api_key') || '';
+            const sheet = localStorage.getItem('google_sheet_id') || '';
+            const script = localStorage.getItem('apps_script_url') || '';
+
+            geminiKeyInput.value = key;
+            googleSheetId.value = sheet;
+            appsScriptUrl.value = script;
+
+            modalGeminiKey.value = key;
+            modalSheetId.value = sheet;
+            modalAppsScript.value = script;
+        });
+
+        function saveSettingsFromUI() {
+            const key = geminiKeyInput.value.trim();
+            const sheet = googleSheetId.value.trim();
+            const script = appsScriptUrl.value.trim();
+
+            localStorage.setItem('gemini_api_key', key);
+            localStorage.setItem('google_sheet_id', sheet);
+            localStorage.setItem('apps_script_url', script);
+
+            modalGeminiKey.value = key;
+            modalSheetId.value = sheet;
+            modalAppsScript.value = script;
+            
+            showToast('Settings Saved', 'Configurations saved locally.', false);
+        }
+
+        geminiKeyInput.addEventListener('change', saveSettingsFromUI);
+        googleSheetId.addEventListener('change', saveSettingsFromUI);
+        appsScriptUrl.addEventListener('change', saveSettingsFromUI);
+
+        // Modal Controls
+        btnOpenSettings.addEventListener('click', () => {
+            settingsModal.style.display = 'flex';
+        });
+        btnCloseSettings.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
+        btnSaveSettings.addEventListener('click', () => {
+            geminiKeyInput.value = modalGeminiKey.value;
+            googleSheetId.value = modalSheetId.value;
+            appsScriptUrl.value = modalAppsScript.value;
+            saveSettingsFromUI();
+            settingsModal.style.display = 'none';
+        });
+
+        // Dropzone interactions
+        dropzone.addEventListener('click', () => fileInput.click());
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+        fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+        function handleFiles(files) {
+            for (let file of files) {
+                if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                    if (!uploadedFiles.some(f => f.name === file.name)) {
+                        uploadedFiles.push(file);
+                    }
+                }
+            }
+            updateFileList();
+        }
+
+        function updateFileList() {
+            if (uploadedFiles.length === 0) {
+                fileListItems.innerHTML = `
+                    <div class="file-item-empty" style="color:var(--text-muted); font-size:0.9rem; padding:1rem; text-align:center;">
+                        No files uploaded yet. Add Chat 1 & Chat 2 to begin.
+                    </div>
+                `;
+                btnRunAudit.disabled = true;
+                return;
+            }
+
+            fileListItems.innerHTML = '';
+            uploadedFiles.forEach((file, index) => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `
+                    <div class="file-item-info">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <div>
+                            <div class="file-item-name">${file.name}</div>
+                            <div class="file-item-size">${(file.size / 1024).toFixed(1)} KB</div>
+                        </div>
+                    </div>
+                    <button class="btn-remove-file" onclick="removeFile(${index})"><i class="fa-solid fa-trash"></i></button>
+                `;
+                fileListItems.appendChild(item);
+            });
+
+            btnRunAudit.disabled = false;
+        }
+
+        window.removeFile = function(index) {
+            uploadedFiles.splice(index, 1);
+            updateFileList();
+        };
+
+        // Run Audit Button Click
+        btnRunAudit.addEventListener('click', async () => {
+            const key = geminiKeyInput.value.trim();
+            if (!key) {
+                showToast('API Key Required', 'Please enter your Gemini API Key in the settings panel.', true);
+                return;
+            }
+
+            // Reset state
+            parsedChats = {};
+            auditReports = {};
+            currentActiveChat = null;
+
+            progressModal.style.display = 'flex';
+            progressStatusText.innerText = 'Uploading Files...';
+            progressSubtextText.innerText = 'Parsing WhatsApp log files.';
+
+            try {
+                // Step 1: Upload and Parse each file
+                for (let file of uploadedFiles) {
+                    progressStatusText.innerText = `Parsing ${file.name}...`;
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    const uploadResp = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!uploadResp.ok) {
+                        throw new Error(`Failed to parse file ${file.name}: ${await uploadResp.text()}`);
+                    }
+
+                    const parsedData = await uploadResp.json();
+                    parsedChats[file.name] = parsedData.messages;
+                }
+
+                // Step 2: Audit each file via Gemini API
+                for (let file of uploadedFiles) {
+                    progressStatusText.innerText = `Auditing ${file.name}...`;
+                    progressSubtextText.innerText = 'Analyzing conversation patterns with Gemini AI.';
+
+                    const analyzeResp = await fetch('/api/analyze', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Gemini-Key': key
+                        },
+                        body: JSON.stringify({
+                            filename: file.name,
+                            messages: parsedChats[file.name]
+                        })
+                    });
+
+                    if (!analyzeResp.ok) {
+                        const errMsg = await analyzeResp.json();
+                        throw new Error(`Audit failed for ${file.name}: ${errMsg.detail || 'Unknown error'}`);
+                    }
+
+                    const auditReport = await analyzeResp.json();
+                    auditReports[file.name] = auditReport;
+                }
+
+                // Close progress and render dashboard
+                progressModal.style.display = 'none';
+                renderDashboard();
+                showToast('Audit Complete', 'All conversations analyzed successfully!', false);
+
+            } catch (err) {
+                console.error(err);
+                progressModal.style.display = 'none';
+                showToast('Audit Error', err.message, true);
+            }
+        });
+
+        // Tab Switching Logic
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabButtons.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Render Dashboard Data
+        function renderDashboard() {
+            dashboardResults.style.display = 'flex';
+            
+            // Calculate metrics
+            let totalChats = uploadedFiles.length;
+            let totalFindings = 0;
+            let criticalCount = 0;
+            let majorCount = 0;
+
+            findingsContainer.innerHTML = '';
+            patternsContainer.innerHTML = '';
+            transcriptChatList.innerHTML = '';
+
+            // Group all findings across files
+            let globalFindingIndex = 0;
+
+            for (let filename in auditReports) {
+                const report = auditReports[filename];
+                const findings = report.findings || [];
+                const patterns = report.macro_patterns || [];
+                totalFindings += findings.length;
+
+                // Create chat selector in sidebar
+                const selectorItem = document.createElement('div');
+                selectorItem.className = 'chat-selector-item';
+                selectorItem.dataset.filename = filename;
+                selectorItem.innerHTML = `
+                    <div class="chat-selector-title">${filename}</div>
+                    <div class="chat-selector-info">
+                        ${report.summary?.student_name || 'Student'} • ${findings.length} findings
+                    </div>
+                `;
+                selectorItem.addEventListener('click', () => selectChatForTranscript(filename));
+                transcriptChatList.appendChild(selectorItem);
+
+                // Render patterns
+                patterns.forEach(pat => {
+                    const card = document.createElement('div');
+                    card.className = 'pattern-card';
+                    card.innerHTML = `
+                        <div class="pattern-title">${pat.title} <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal; margin-left:0.5rem;">[${filename}]</span></div>
+                        <div class="pattern-description">${pat.description}</div>
+                    `;
+                    patternsContainer.appendChild(card);
+                });
+
+                // Render findings
+                findings.forEach((finding, idx) => {
+                    globalFindingIndex++;
+                    const sev = (finding.severity || 'minor').toLowerCase();
+                    if (sev === 'critical') criticalCount++;
+                    if (sev === 'major') majorCount++;
+
+                    // Format Category Text
+                    let categoryFullName = finding.category;
+                    const catMap = {
+                        'CEFC': 'Empathy & Family Care',
+                        'UPMT': 'Coercion & Pressure',
+                        'FTFD': 'Financial Transparency',
+                        'TSPB': 'Tone Shift & Boundaries',
+                        'MSAB': 'Sponsor Bypassing'
+                    };
+                    if (catMap[finding.category]) {
+                        categoryFullName = `${finding.category} - ${catMap[finding.category]}`;
+                    }
+
+                    // Build evidence quotes
+                    let evidenceHtml = '';
+                    if (finding.evidence && finding.evidence.length > 0) {
+                        finding.evidence.forEach(ev => {
+                            const lineRef = ev.line ? `Line ${ev.line}` : 'Ref';
+                            evidenceHtml += `
+                                <div class="evidence-quote">
+                                    <span class="evidence-text">"${ev.quote}"</span>
+                                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                                        <span class="evidence-time">${ev.timestamp || ''}</span>
+                                        <button class="btn-go-to-line" onclick="jumpToTranscriptLine('${filename}', ${ev.line})">
+                                            <i class="fa-solid fa-arrow-right-to-bracket"></i> ${lineRef}
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        evidenceHtml = '<p style="color:var(--text-muted); font-style:italic;">No direct message quotes linked.</p>';
+                    }
+
+                    const row = document.createElement('div');
+                    row.className = 'finding-row';
+                    row.innerHTML = `
+                        <div class="finding-summary" onclick="toggleFindingDetails('finding-${globalFindingIndex}')">
+                            <div class="finding-title-block">
+                                <span class="severity-badge severity-${sev}">${finding.severity}</span>
+                                <span class="category-badge">${finding.category}</span>
+                                <span class="finding-title">${finding.title}</span>
+                            </div>
+                            <div class="finding-meta">
+                                <span style="font-size:0.8rem; color:var(--text-muted);">${filename}</span>
+                                <i class="fa-solid fa-chevron-down" id="arrow-finding-${globalFindingIndex}"></i>
+                            </div>
+                        </div>
+                        <div class="finding-details" id="details-finding-${globalFindingIndex}">
+                            <div class="details-grid">
+                                <div class="details-section">
+                                    <h4>Finding Explanation</h4>
+                                    <p>${finding.description}</p>
+                                </div>
+                                <div class="details-section">
+                                    <h4>Edoofa Business Impact</h4>
+                                    <p>${finding.impact}</p>
+                                </div>
+                                <div class="details-section" style="grid-column: span 2;">
+                                    <h4 style="color:var(--success);">Actionable Mentor Guidance</h4>
+                                    <p>${finding.guidance}</p>
+                                </div>
+                                <div class="details-section evidence-section">
+                                    <h4>Evidence Quotes</h4>
+                                    ${evidenceHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    findingsContainer.appendChild(row);
+                });
+            }
+
+            // Set metric values
+            document.getElementById('val-audited-chats').innerText = totalChats;
+            document.getElementById('val-critical-findings').innerText = criticalCount;
+            document.getElementById('val-major-findings').innerText = majorCount;
+            document.getElementById('val-total-findings').innerText = totalFindings;
+
+            // Auto-select first chat transcript
+            if (totalChats > 0) {
+                selectChatForTranscript(Object.keys(parsedChats)[0]);
+            }
+        }
+
+        window.toggleFindingDetails = function(id) {
+            const panel = document.getElementById(`details-${id}`);
+            const arrow = document.getElementById(`arrow-${id}`);
+            if (panel.style.display === 'block') {
+                panel.style.display = 'none';
+                arrow.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            } else {
+                panel.style.display = 'block';
+                arrow.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            }
+        };
+
+        // Transcript Selection and rendering
+        function selectChatForTranscript(filename) {
+            currentActiveChat = filename;
+            
+            // Highlight selector
+            document.querySelectorAll('.chat-selector-item').forEach(item => {
+                if (item.dataset.filename === filename) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            renderTranscriptMessages();
+        }
+
+        function renderTranscriptMessages(filterText = '') {
+            if (!currentActiveChat || !parsedChats[currentActiveChat]) return;
+
+            transcriptMessagesContainer.innerHTML = '';
+            const messages = parsedChats[currentActiveChat];
+            const lowerFilter = filterText.toLowerCase();
+
+            messages.forEach(msg => {
+                if (filterText && !msg.text.toLowerCase().includes(lowerFilter) && !msg.sender.toLowerCase().includes(lowerFilter)) {
+                    return; // Filter out
+                }
+
+                const bubble = document.createElement('div');
+                bubble.id = `msg-line-${msg.line}`;
+                
+                if (msg.type === 'event') {
+                    bubble.className = 'msg-bubble msg-system';
+                    bubble.innerHTML = `<span class="msg-line-tag">L${msg.line}</span> ${msg.text}`;
+                } else {
+                    const isCounselor = msg.sender.toLowerCase().includes('counselor') || msg.sender.toLowerCase().includes('director');
+                    bubble.className = `msg-bubble ${isCounselor ? 'msg-counselor' : 'msg-family'}`;
+                    bubble.innerHTML = `
+                        <div class="msg-meta">
+                            <span class="msg-sender">${msg.sender}</span>
+                            <div>
+                                <span class="msg-line-tag">L${msg.line}</span>
+                                <span>${msg.timestamp}</span>
+                            </div>
+                        </div>
+                        <div class="msg-body">${msg.text}</div>
+                    `;
+                }
+                transcriptMessagesContainer.appendChild(bubble);
+            });
+        }
+
+        // Search in transcripts
+        searchMsgInput.addEventListener('input', (e) => {
+            renderTranscriptMessages(e.target.value);
+        });
+
+        // Jump to specific line inside transcript
+        window.jumpToTranscriptLine = function(filename, line) {
+            // 1. Switch to transcript tab
+            tabButtons.forEach(b => {
+                if (b.dataset.tab === 'tab-transcripts') b.click();
+            });
+
+            // 2. Select corresponding chat
+            selectChatForTranscript(filename);
+
+            // 3. Scroll to line and highlight
+            setTimeout(() => {
+                const targetElement = document.getElementById(`msg-line-${line}`);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Trigger highlighting
+                    targetElement.classList.add('msg-highlight');
+                    setTimeout(() => {
+                        targetElement.classList.remove('msg-highlight');
+                    }, 5000);
+                }
+            }, 300);
+        };
+
+        // Sync to Google Sheets
+        btnSyncNow.addEventListener('click', async () => {
+            const sheetId = googleSheetId.value.trim();
+            const scriptUrl = appsScriptUrl.value.trim();
+
+            if (!sheetId) {
+                showToast('Sheet ID Required', 'Please enter your Google Spreadsheet ID in the settings.', true);
+                return;
+            }
+
+            if (!scriptUrl) {
+                showToast('Apps Script URL Required', 'Please enter your Apps Script Web App URL to sync.', true);
+                return;
+            }
+
+            // Gather all findings rows
+            const rowsToSync = [];
+            for (let filename in auditReports) {
+                const report = auditReports[filename];
+                const studentName = report.summary?.student_name || 'Unknown Student';
+                
+                (report.findings || []).forEach(finding => {
+                    // Combine evidence text
+                    const evidenceText = (finding.evidence || []).map(ev => `[Line ${ev.line}] "${ev.quote}"`).join('\n');
+                    rowsToSync.push({
+                        chatId: `${filename} (${studentName})`,
+                        category: finding.category,
+                        severity: finding.severity,
+                        title: finding.title,
+                        description: finding.description,
+                        evidence: evidenceText,
+                        impact: finding.impact,
+                        guidance: finding.guidance
+                    });
+                });
+            }
+
+            if (rowsToSync.length === 0) {
+                showToast('No Findings', 'No findings available to sync.', true);
+                return;
+            }
+
+            btnSyncNow.disabled = true;
+            btnSyncNow.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Syncing...';
+
+            try {
+                const resp = await fetch('/api/sync', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sheetId: sheetId,
+                        appsScriptUrl: scriptUrl,
+                        rows: rowsToSync
+                    })
+                });
+
+                if (!resp.ok) {
+                    throw new Error(`Sync failed: ${await resp.text()}`);
+                }
+
+                const result = await resp.json();
+                showToast('Sync Successful', `Appended ${result.count || rowsToSync.length} compliance findings to Google Sheet!`, false);
+
+            } catch (err) {
+                console.error(err);
+                showToast('Sync Error', err.message, true);
+            } finally {
+                btnSyncNow.disabled = false;
+                btnSyncNow.innerHTML = '<i class="fa-solid fa-rotate"></i> Sync Findings to Sheets';
+            }
+        });
+
+        // Toast Helper
+        function showToast(title, message, isError = false) {
+            toastTitleText.innerText = title;
+            toastDescText.innerText = message;
+            
+            if (isError) {
+                systemToast.classList.add('error');
+                toastIconBlock.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color:var(--danger);"></i>';
+            } else {
+                systemToast.classList.remove('error');
+                toastIconBlock.innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--success);"></i>';
+            }
+
+            systemToast.classList.add('show');
+            setTimeout(() => {
+                systemToast.classList.remove('show');
+            }, 4000);
+        }
+
+        // PRELOADED DEMO FINDINGS DATA
+        const PRELOADED_DEMO = {
+          "Chat 1.txt": {
+            "summary": {
+              "student_name": "Student 1",
+              "counselor_name": "Career Counselor",
+              "duration": "27/03/26 to 01/04/26",
+              "outcome": "Incomplete; parent requested a pause due to husband's memorial service, which the counselor ignored and threatened application closure."
+            },
+            "macro_patterns": [
+              {
+                "title": "Ignoring Family Bereavement & Funeral Pause Request",
+                "description": "Throughout the early stages of Chat 1, the counselor completely ignores the parent's explicit notice of a memorial service for her late husband. Pushing marketing and check-ins over the weekend demonstrates a critical failure of active listening and empathy."
+              },
+              {
+                "title": "Artificial Urgency & Coercive Closure Warnings",
+                "description": "The counselor uses high-pressure scheduling tactics, threatening formal application closure at 8:01 AM on Monday morning for a weekend 'lack of response', violating standard counseling protocols."
+              }
+            ],
+            "findings": [
+              {
+                "category": "CEFC",
+                "severity": "Critical",
+                "title": "Ignoring Funeral Context & Bereavement Pause",
+                "description": "The parent explicitly shares that she is busy hosting her late husband's memorial service and requests to discuss further on Monday. The counselor acknowledges this briefly but proceeds to send daily promotional quotes, follow-ups, and YouTube case studies over the weekend anyway, ignoring the bereavement boundary.",
+                "evidence": [
+                  { "timestamp": "27/03/26, 1:27 pm", "quote": "We are having my late Husbands memorial service. I'll be able to discuss further after the event. Can I get back to you on Monday", "line": 13 },
+                  { "timestamp": "27/03/26, 7:38 pm", "quote": "As we come towards the end of our discussion today, please reflect on this where our proud Edoofian got a chance to visit the AI SUMMIT in INDIA", "line": 17 },
+                  { "timestamp": "28/03/26, 10:34 am", "quote": "Good Morning and Blessed Saturday! ... Shall we begin our discussion?", "line": 22 }
+                ],
+                "impact": "Severely damages credibility. Treating a grieving widow as a sales target destroys trust and alienates the primary financial decision-maker.",
+                "guidance": "The counselor should express sincere condolences, immediately offer to pause communication, and schedule a reminder to connect on Monday afternoon: 'I am very sorry for your loss. We will pause our chat. I will check in with you on Monday afternoon when you are ready.'"
+              },
+              {
+                "category": "UPMT",
+                "severity": "Critical",
+                "title": "Coercive closure threat on Monday morning",
+                "description": "On Monday at 8:01 AM, the counselor sends an aggressive message complaining about 'lack of response over the past 2-3 days' (the exact weekend of the funeral) and threatens to formally close the application if they do not actively participate today.",
+                "evidence": [
+                  { "timestamp": "31/03/26, 8:01 am", "quote": "I must express my concern about the lack of response over the past 2-3 days... If you do not actively participate in your session today, I will be forced to put a formal closure to your application.", "line": 33 }
+                ],
+                "impact": "Triggers immediate defensiveness and breaks the student-counselor trust relationship by utilizing emotional manipulation.",
+                "guidance": "Acknowledge the return from the funeral: 'I hope you and your family are doing okay. Let us know when you have 10 minutes to resume our higher education mapping.'"
+              },
+              {
+                "category": "FTFD",
+                "severity": "Major",
+                "title": "Failure to address incorrect student financial expectations",
+                "description": "The student states they believe Edoofa is a full ride ('fees and accommodations are paid for') and they only pay for flight tickets. The counselor says 'I'll be guiding you correctly' but never corrects the belief, pivoting instead to generic Edoofa history and Zambia ministry partnerships.",
+                "evidence": [
+                  { "timestamp": "31/03/26, 10:48 am", "quote": "I know that the fees and accommodations are paid for. The only thing we have to pay for is the flight tickets...", "line": 62 },
+                  { "timestamp": "31/03/26, 10:56 am", "quote": "Oh, I'll be guiding you correctly please. Firstly Edoofa —it is a government-appreciated scholarship program...", "line": 66 }
+                ],
+                "impact": "Leads to high pipeline dropouts once parents realize there are enrollment fees ($250-$400) and tuition co-pays. Omitting this information wastes time.",
+                "guidance": "Correct the misconception immediately and transparently: 'Actually, Edoofa offers partial to full scholarships (50-100%) on tuition and accommodation. There is an enrollment fee of $250. Let me guide you on the exact fee breakdown.'"
+              }
+            ]
+          },
+          "Chat 2.txt": {
+            "summary": {
+              "student_name": "Student 2",
+              "counselor_name": "Career Counselor & Program Director",
+              "duration": "02/04/26 to 10/04/26",
+              "outcome": "Application closed. The family (grandmother) withdrew, citing aggressive counselor sales pressure and guilt-tripping."
+            },
+            "macro_patterns": [
+              {
+                "title": "Installment Pushing to Force Immediate Financial Committal",
+                "description": "When the parent explicitly shares they have a cash flow constraint mid-month and need time, the counselor bypasses this by offering payment splits ($138 now, $138 later) and calling/messaging incessantly to force a decision."
+              },
+              {
+                "title": "Guilt-Tripping Families on Education Priority",
+                "description": "When the family decides to decline the offer because they cannot afford it, the counselor challenges their parenting choices, questioning why they cannot save $150/month and belittling their local school system."
+              }
+            ],
+            "findings": [
+              {
+                "category": "UPMT",
+                "severity": "Major",
+                "title": "Short scheduling notices and tight test deadlines",
+                "description": "The counselor schedules an interview with the director on 15-minute notice, demanding immediate voice notes. Later, the counselor gives a scholarship test at 2:19 PM and demands submission by 12:00 AM midnight the same day, sending multiple follow-up warnings.",
+                "evidence": [
+                  { "timestamp": "02/04/26, 1:15 pm", "quote": "Your interview will start in 15 minutes. In the meantime, kindly you and your parent introduce themselves in a voicenote.", "line": 45 },
+                  { "timestamp": "02/04/26, 2:19 pm", "quote": "You will have to submit it by the end of the day ... Submit before 12:00 AM today.", "line": 58 }
+                ],
+                "impact": "Creates artificial stress and makes the scholarship program feel chaotic and transaction-driven rather than academic.",
+                "guidance": "Provide standard 24-48 hour response windows: 'Here is the scholarship test. Please complete it within the next 48 hours.'"
+              },
+              {
+                "category": "UPMT",
+                "severity": "Critical",
+                "title": "Bypassing budget objections with high-pressure payment schemes",
+                "description": "The parent clearly states she has no funds mid-month because she is paying other children's school bills, requesting to wait until month-end. The counselor refuses to pause, repeatedly scheduling director calls and suggesting split payment installments ($138 now, $138 later) to bypass the objection.",
+                "evidence": [
+                  { "timestamp": "05/04/26, 3:50 pm", "quote": "If we don't manage to pay the $250 on the 11th. What happens.", "line": 145 },
+                  { "timestamp": "05/04/26, 4:00 pm", "quote": "There is a challenge yes as the time given may not be enough for us to raise that amount. Mid month bills are abit hectic. Monthend is better...", "line": 147 },
+                  { "timestamp": "09/04/26, 8:09 pm", "quote": "As discussed, since you had requested to complete enrollment in parts, we can proceed as follows: $138 on or before 11th April, Remaining $138 on or before 25th...", "line": 211 }
+                ],
+                "impact": "Increases enrollment dropouts and builds immediate resentment. Forcing payment plans when parents state they are broke leads to subsequent defaults.",
+                "guidance": "Respect the financial boundaries: 'I understand. Let's schedule your enrollment deadline for April 30th when your salary is paid.'"
+              },
+              {
+                "category": "TSPB",
+                "severity": "Critical",
+                "title": "Defensive response and guilt-tripping on rejection",
+                "description": "When the grandmother politely explains they cannot afford it this year, the counselor responds defensively, questioning why they can't save $150-$200 a month and asking challenging questions about Zambia's tertiary systems. This triggers the grandmother to call out their sales pressure and guilt-trips.",
+                "evidence": [
+                  { "timestamp": "10/04/26, 3:35 pm", "quote": "We had a family meeting... concluded that this year will definitely be impossible... we shall reach out to u later...", "line": 222 },
+                  { "timestamp": "10/04/26, 3:36 pm", "quote": "May I know please if the family is not even in the position to save 150-200$ per month for Student?", "line": 223 },
+                  { "timestamp": "10/04/26, 3:41 pm", "quote": "putting it this way is very unfair to the family... understand our position than sending us on a guilty lane... Respect our decision as u are also looking at making a sale", "line": 226 }
+                ],
+                "impact": "Severely harms word-of-mouth branding. The grandmother explicitly states they feel 'belittled' and 'sent on a guilty lane', closing the door forever.",
+                "guidance": "Accept decisions gracefully: 'I completely respect your decision. Planning is key. I will put a hold on Student's application, and you can contact us later in the year.'"
+              },
+              {
+                "category": "MSAB",
+                "severity": "Major",
+                "title": "Bypassing Parent/Sponsor to counsel Student alone",
+                "description": "When the parent explicitly shares they are held up at work, the counselor goes ahead and quizzes the student on high-stakes visa and University topics instead of pausing to ensure the sponsor is present.",
+                "evidence": [
+                  { "timestamp": "04/04/26, 7:08 pm", "quote": "Abit held up but you can go ahead with Student", "line": 108 },
+                  { "timestamp": "04/04/26, 7:14 pm", "quote": "Student, since you have gone through the letter, do you have any questions or doubts? ... Visa rejection chances are negligible...", "line": 110 }
+                ],
+                "impact": "Creates family misalignment. The student makes commitments they cannot financially back, resulting in confusion and sudden withdrawal.",
+                "guidance": "Always coordinate with the primary sponsor: 'Thank you Parent, I will wait to discuss this when we can connect with both you and Student together.'"
+              }
+            ]
+          }
+        };
+
+        // CLIENT-SIDE PARSER FOR DEMO FILES
+        function parseChatText(text) {
+            const pattern = /^(\d{1,2}\/\d{1,2}\/\d{2,4},\s*\d{1,2}:\d{2}\s*(?:[ap]\.m\.|[ap]m|am|pm|AM|PM| am| pm)?)\s*-\s*(.*?)$/;
+            const messages = [];
+            let currentMessage = null;
+            let lineNumber = 0;
+            
+            const lines = text.split('\n');
+            lines.forEach(rawLine => {
+                lineNumber++;
+                const line = rawLine.trim();
+                if (!line) {
+                    if (currentMessage) currentMessage.text += "\n";
+                    return;
+                }
+                
+                const match = pattern.exec(line);
+                if (match) {
+                    if (currentMessage) messages.push(currentMessage);
+                    const timestamp = match[1].trim();
+                    const content = match[2].trim();
+                    
+                    if (content.includes(':')) {
+                        const colonIdx = content.indexOf(':');
+                        const sender = content.substring(0, colonIdx).trim();
+                        const body = content.substring(colonIdx + 1).trim();
+                        currentMessage = {
+                            id: messages.length + 1,
+                            line: lineNumber,
+                            type: "message",
+                            timestamp: timestamp,
+                            sender: sender,
+                            text: body
+                        };
+                    } else {
+                        currentMessage = {
+                            id: messages.length + 1,
+                            line: lineNumber,
+                            type: "event",
+                            timestamp: timestamp,
+                            sender: "System",
+                            text: content
+                        };
+                    }
+                } else {
+                    if (currentMessage) {
+                        currentMessage.text += "\n" + line;
+                    } else {
+                        currentMessage = {
+                            id: messages.length + 1,
+                            line: lineNumber,
+                            type: "info",
+                            timestamp: "",
+                            sender: "System",
+                            text: line
+                        };
+                    }
+                }
+            });
+            
+            if (currentMessage) messages.push(currentMessage);
+            return messages;
+        }
+
+        // LOAD DEMO EVENT LISTENER
+        btnLoadDemo.addEventListener('click', async () => {
+            progressModal.style.display = 'flex';
+            progressStatusText.innerText = 'Preloading Demo Files...';
+            progressSubtextText.innerText = 'Fetching Chat 1 and Chat 2 transcripts.';
+
+            try {
+                // Mock files for upload items
+                uploadedFiles = [
+                    { name: 'Chat 1.txt', size: 15783 },
+                    { name: 'Chat 2.txt', size: 20090 }
+                ];
+                updateFileList();
+
+                // Fetch Chat 1 text
+                const chat1Resp = await fetch('/Chat 1.txt');
+                if (!chat1Resp.ok) throw new Error('Could not fetch Chat 1.txt');
+                const chat1Text = await chat1Resp.text();
+                parsedChats['Chat 1.txt'] = parseChatText(chat1Text);
+
+                // Fetch Chat 2 text
+                const chat2Resp = await fetch('/Chat 2.txt');
+                if (!chat2Resp.ok) throw new Error('Could not fetch Chat 2.txt');
+                const chat2Text = await chat2Resp.text();
+                parsedChats['Chat 2.txt'] = parseChatText(chat2Text);
+
+                // Preload generated audit reports
+                auditReports = PRELOADED_DEMO;
+
+                // Render
+                setTimeout(() => {
+                    progressModal.style.display = 'none';
+                    renderDashboard();
+                    showToast('Demo Loaded Successfully', 'Chat logs and compliance findings rendered.', false);
+                }, 800);
+
+            } catch (err) {
+                console.error(err);
+                progressModal.style.display = 'none';
+                showToast('Failed to Load Demo', err.message, true);
+            }
+        });
+
+    </script>
+</body>
+</html>
