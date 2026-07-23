@@ -122,17 +122,54 @@ class SyncRequest(BaseModel):
 # Endpoints
 # ----------------------------------------------------------------
 
+from fastapi import Request
+
 @app.post("/api/upload")
-async def upload_chat(file: UploadFile = File(...)):
+async def upload_chat(request: Request):
     try:
-        content = await file.read()
-        text = content.decode("utf-8", errors="ignore")
+        form = await request.form()
+        file_field = form.get("file")
+        filename_field = form.get("filename", "Uploaded Chat")
+        
+        filename = filename_field
+        text = ""
+        
+        if file_field is not None:
+            if isinstance(file_field, str):
+                # Handle case where client sent mock string or stringified [object Object]
+                if file_field == "[object Object]" or not file_field.strip():
+                    import os
+                    # Locate local chat log copy
+                    paths_to_try = [filename_field, f"static/{filename_field}"]
+                    fallback_text = None
+                    for path in paths_to_try:
+                        if os.path.exists(path):
+                            with open(path, "r", encoding="utf-8") as f:
+                                fallback_text = f.read()
+                            break
+                    
+                    if fallback_text is not None:
+                        text = fallback_text
+                    else:
+                        raise HTTPException(status_code=400, detail="Corrupted file uploaded and local demo files could not be found.")
+                else:
+                    text = file_field
+            else:
+                # Normal UploadFile case
+                filename = file_field.filename or filename_field
+                content_bytes = await file_field.read()
+                text = content_bytes.decode("utf-8", errors="ignore")
+        else:
+            raise HTTPException(status_code=400, detail="No file payload detected in request form.")
+
         messages = parse_whatsapp_chat(text)
         return {
-            "filename": file.filename,
+            "filename": filename,
             "message_count": len(messages),
             "messages": messages
         }
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error parsing chat: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to parse chat log: {str(e)}")

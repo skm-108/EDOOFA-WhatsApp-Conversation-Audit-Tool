@@ -1344,6 +1344,7 @@
                     progressStatusText.innerText = `Parsing ${file.name}...`;
                     const formData = new FormData();
                     formData.append('file', file);
+                    formData.append('filename', file.name || 'Chat.txt');
 
                     const uploadResp = await fetch('/api/upload', {
                         method: 'POST',
